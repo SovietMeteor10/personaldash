@@ -54,7 +54,7 @@ export default function ResearchReports({ reports }: ResearchReportsProps) {
                 </h3>
                 <button
                   onClick={() => setExpandedId(expandedId === report.id ? null : report.id)}
-                  className="text-xs ml-3 transition-opacity hover:opacity-70"
+                  className="text-xs ml-3 transition-opacity hover:opacity-70 flex-shrink-0"
                   style={{ color: '#999999' }}
                 >
                   {expandedId === report.id ? 'Collapse' : 'Expand'}
@@ -62,9 +62,13 @@ export default function ResearchReports({ reports }: ResearchReportsProps) {
               </div>
               
               {report.tags && report.tags.length > 0 && (
-                <div className="flex gap-2 mb-2">
+                <div className="flex gap-2 mb-3 flex-wrap">
                   {report.tags.map(tag => (
-                    <span key={tag} className="text-xs" style={{ color: '#666666' }}>
+                    <span key={tag} className="text-xs px-2 py-1" style={{ 
+                      color: '#999999',
+                      backgroundColor: '#353535',
+                      borderRadius: '2px'
+                    }}>
                       {tag}
                     </span>
                   ))}
@@ -72,8 +76,89 @@ export default function ResearchReports({ reports }: ResearchReportsProps) {
               )}
 
               {expandedId === report.id && (
-                <div className="mt-3 mb-3 text-sm prose-sm" style={{ color: '#cccccc' }}>
-                  <ReactMarkdown>{report.content}</ReactMarkdown>
+                <div 
+                  className="mt-4 mb-4 markdown-content"
+                  style={{ 
+                    color: '#cccccc',
+                    fontSize: '14px',
+                    lineHeight: '1.6'
+                  }}
+                >
+                  <ReactMarkdown
+                    components={{
+                      h1: ({node, ...props}) => <h1 style={{ 
+                        fontSize: '24px', 
+                        fontWeight: '600', 
+                        color: '#ffffff', 
+                        marginBottom: '16px',
+                        marginTop: '24px',
+                        letterSpacing: '-0.02em'
+                      }} {...props} />,
+                      h2: ({node, ...props}) => <h2 style={{ 
+                        fontSize: '18px', 
+                        fontWeight: '600', 
+                        color: '#ffffff', 
+                        marginBottom: '12px',
+                        marginTop: '20px',
+                        paddingBottom: '8px',
+                        borderBottom: '1px solid #353535'
+                      }} {...props} />,
+                      h3: ({node, ...props}) => <h3 style={{ 
+                        fontSize: '15px', 
+                        fontWeight: '600', 
+                        color: '#ffffff', 
+                        marginBottom: '8px',
+                        marginTop: '16px'
+                      }} {...props} />,
+                      p: ({node, ...props}) => <p style={{ 
+                        marginBottom: '12px',
+                        color: '#cccccc'
+                      }} {...props} />,
+                      ul: ({node, ...props}) => <ul style={{ 
+                        marginLeft: '20px',
+                        marginBottom: '12px',
+                        listStyleType: 'disc'
+                      }} {...props} />,
+                      ol: ({node, ...props}) => <ol style={{ 
+                        marginLeft: '20px',
+                        marginBottom: '12px',
+                        listStyleType: 'decimal'
+                      }} {...props} />,
+                      li: ({node, ...props}) => <li style={{ 
+                        marginBottom: '4px',
+                        color: '#cccccc'
+                      }} {...props} />,
+                      strong: ({node, ...props}) => <strong style={{ 
+                        fontWeight: '600',
+                        color: '#ffffff'
+                      }} {...props} />,
+                      em: ({node, ...props}) => <em style={{ 
+                        fontStyle: 'italic',
+                        color: '#ffffff'
+                      }} {...props} />,
+                      code: ({node, ...props}) => <code style={{ 
+                        backgroundColor: '#353535',
+                        padding: '2px 6px',
+                        borderRadius: '2px',
+                        fontSize: '13px',
+                        color: '#ffffff'
+                      }} {...props} />,
+                      hr: ({node, ...props}) => <hr style={{ 
+                        border: 'none',
+                        borderTop: '1px solid #353535',
+                        margin: '20px 0'
+                      }} {...props} />,
+                      blockquote: ({node, ...props}) => <blockquote style={{ 
+                        borderLeft: '2px solid #666666',
+                        paddingLeft: '16px',
+                        marginLeft: '0',
+                        marginBottom: '12px',
+                        color: '#999999'
+                      }} {...props} />,
+                    }}
+                  >
+                    {report.content}
+                  </ReactMarkdown>
                 </div>
               )}
 
