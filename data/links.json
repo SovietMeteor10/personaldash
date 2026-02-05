@@ -1,0 +1,25 @@
+{
+  "quickLinks": [
+    {
+      "id": "daily-regime",
+      "title": "Daily Regime",
+      "url": "https://docs.google.com/spreadsheets/d/1aimefBgk3Lv6jnYUXURQDxPrQjvx-_pb3QNBza7aBxM/edit?gid=623323033#gid=623323033",
+      "icon": "📅",
+      "featured": true
+    },
+    {
+      "id": "book-lists",
+      "title": "Book Lists",
+      "url": "https://docs.google.com/spreadsheets/d/1TnpQEP3Q5IqATNfPu4ZDZzx84V3Dqq80XwgXEc8FbDk/edit?gid=0#gid=0",
+      "icon": "📚",
+      "featured": true
+    },
+    {
+      "id": "personal-website",
+      "title": "Personal Website",
+      "url": "https://www.anthonyduncalf.dev",
+      "icon": "🌐",
+      "featured": false
+    }
+  ]
+}
