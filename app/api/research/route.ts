@@ -3,18 +3,33 @@ import { Octokit } from '@octokit/rest';
 
 export async function POST(request: Request) {
   try {
+    console.log('📥 Webhook received request');
+    
     const { title, content, tags, secret } = await request.json();
+    
+    console.log('📝 Title:', title?.slice(0, 100));
+    console.log('📊 Content length:', content?.length);
+    console.log('🏷️ Tags:', tags);
+    console.log('🔐 Secret provided:', !!secret);
+    console.log('🔐 Expected secret set:', !!process.env.WEBHOOK_SECRET);
     
     // Verify secret to prevent unauthorized access
     if (secret !== process.env.WEBHOOK_SECRET) {
+      console.error('❌ Secret mismatch!');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
     if (!title || !content) {
+      console.error('❌ Missing title or content');
       return NextResponse.json({ error: 'Missing title or content' }, { status: 400 });
     }
     
+    console.log('✅ Validation passed');
+    
     // Initialize GitHub API client
+    console.log('🔧 Initializing GitHub client');
+    console.log('🔐 GitHub token set:', !!process.env.GITHUB_TOKEN);
+    
     const octokit = new Octokit({
       auth: process.env.GITHUB_TOKEN
     });
@@ -24,6 +39,8 @@ export async function POST(request: Request) {
     const path = 'data/research.json';
     const branch = 'main';
     
+    console.log('📥 Fetching current file from GitHub...');
+    
     // Get current file content and SHA
     const { data: fileData } = await octokit.repos.getContent({
       owner,
@@ -31,6 +48,8 @@ export async function POST(request: Request) {
       path,
       ref: branch,
     });
+    
+    console.log('✅ File fetched, SHA:', fileData.sha?.slice(0, 10));
     
     if (!('content' in fileData)) {
       throw new Error('File not found');
@@ -56,7 +75,9 @@ export async function POST(request: Request) {
     const newContent = Buffer.from(JSON.stringify(reports, null, 2)).toString('base64');
     
     // Commit to GitHub
-    await octokit.repos.createOrUpdateFileContents({
+    console.log('💾 Committing to GitHub...');
+    
+    const commitResult = await octokit.repos.createOrUpdateFileContents({
       owner,
       repo,
       path,
@@ -66,10 +87,13 @@ export async function POST(request: Request) {
       branch,
     });
     
+    console.log('✅ Committed! New SHA:', commitResult.data.commit.sha?.slice(0, 10));
+    
     return NextResponse.json({ 
       success: true, 
       message: 'Research report added and pushed to GitHub',
-      report: newReport 
+      report: newReport,
+      commitSha: commitResult.data.commit.sha
     });
   } catch (error) {
     console.error('Error saving research report:', error);
