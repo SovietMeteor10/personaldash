@@ -1,10 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { Octokit } from '@octokit/rest';
 
 export async function POST(request: Request) {
   try {
@@ -19,11 +14,31 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing title or content' }, { status: 400 });
     }
     
-    const filePath = path.join(process.cwd(), 'data', 'research.json');
+    // Initialize GitHub API client
+    const octokit = new Octokit({
+      auth: process.env.GITHUB_TOKEN
+    });
     
-    // Read existing reports
-    const data = await fs.readFile(filePath, 'utf-8');
-    const reports = JSON.parse(data);
+    const owner = 'SovietMeteor10';
+    const repo = 'personaldash';
+    const path = 'data/research.json';
+    const branch = 'main';
+    
+    // Get current file content and SHA
+    const { data: fileData } = await octokit.repos.getContent({
+      owner,
+      repo,
+      path,
+      ref: branch,
+    });
+    
+    if (!('content' in fileData)) {
+      throw new Error('File not found');
+    }
+    
+    // Decode current content
+    const currentContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
+    const reports = JSON.parse(currentContent);
     
     // Create new report
     const newReport = {
@@ -37,20 +52,19 @@ export async function POST(request: Request) {
     // Add to beginning of array
     reports.unshift(newReport);
     
-    // Write back to file
-    await fs.writeFile(filePath, JSON.stringify(reports, null, 2));
+    // Encode new content
+    const newContent = Buffer.from(JSON.stringify(reports, null, 2)).toString('base64');
     
-    // Commit and push to GitHub
-    try {
-      await execAsync('git config user.name "Research Bot"');
-      await execAsync('git config user.email "bot@personaldash.com"');
-      await execAsync('git add data/research.json');
-      await execAsync(`git commit -m "Add research report: ${title}"`);
-      await execAsync('git push');
-    } catch (gitError) {
-      console.error('Git error:', gitError);
-      // Still return success even if git fails
-    }
+    // Commit to GitHub
+    await octokit.repos.createOrUpdateFileContents({
+      owner,
+      repo,
+      path,
+      message: `Add research report: ${title}`,
+      content: newContent,
+      sha: fileData.sha,
+      branch,
+    });
     
     return NextResponse.json({ 
       success: true, 
