@@ -11,38 +11,44 @@ export default function QuickLinks({ links }: QuickLinksProps) {
   const otherLinks = links.filter(link => !link.featured);
 
   return (
-    <section className="mb-8">
-      <h2 className="text-2xl font-bold mb-4">Quick Links</h2>
+    <section className="mb-10">
+      <h2 className="text-xs uppercase tracking-wider font-semibold mb-4 pb-2" style={{ color: '#ffffff', borderBottom: '1px solid #353535', letterSpacing: '0.05em' }}>
+        Quick Links
+      </h2>
       
-      {/* Featured Links - Prominent Display */}
-      <div className="grid md:grid-cols-2 gap-4 mb-6">
+      {/* Featured Links */}
+      <div className="space-y-3 mb-5">
         {featuredLinks.map(link => (
           <a
             key={link.id}
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-4 p-6 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-lg hover:shadow-lg transition-all hover:scale-105"
+            className="block pl-3 transition-colors hover:opacity-80"
+            style={{ borderLeft: '2px solid #ffffff' }}
           >
-            <span className="text-4xl">{link.icon}</span>
-            <span className="text-xl font-semibold">{link.title}</span>
+            <div className="text-base font-medium" style={{ color: '#ffffff', lineHeight: '1.4' }}>
+              {link.title}
+            </div>
           </a>
         ))}
       </div>
 
       {/* Other Links */}
       {otherLinks.length > 0 && (
-        <div className="flex flex-wrap gap-3">
+        <div className="space-y-3">
           {otherLinks.map(link => (
             <a
               key={link.id}
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="block pl-3 transition-colors hover:opacity-80"
+              style={{ borderLeft: '2px solid #666666' }}
             >
-              <span className="text-xl">{link.icon}</span>
-              <span className="font-medium">{link.title}</span>
+              <div className="text-sm font-medium" style={{ color: '#ffffff', lineHeight: '1.4' }}>
+                {link.title}
+              </div>
             </a>
           ))}
         </div>

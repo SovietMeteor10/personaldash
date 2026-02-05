@@ -41,108 +41,125 @@ export default function IdeationWorkspace({ items, onAddItem }: IdeationWorkspac
     return priorityOrder[b.priority] - priorityOrder[a.priority];
   });
 
-  const getPriorityColor = (priority: IdeationItem['priority']) => {
-    switch (priority) {
-      case 'high': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-300 dark:border-red-700';
-      case 'medium': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-300 dark:border-yellow-700';
-      case 'low': return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-300 dark:border-green-700';
-    }
-  };
-
   return (
-    <section className="mb-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Ideation Workspace</h2>
+    <section>
+      <div className="flex justify-between items-center mb-6">
         <button
           onClick={() => setIsAdding(!isAdding)}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+          className="text-xs uppercase tracking-wider font-medium transition-opacity hover:opacity-70"
+          style={{ color: '#999999' }}
         >
-          {isAdding ? 'Cancel' : '+ New Project'}
+          {isAdding ? '× Cancel' : '+ New Project'}
         </button>
       </div>
 
       {isAdding && (
-        <form onSubmit={handleSubmit} className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <div className="mb-3">
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Project title..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900"
-              autoFocus
-            />
-          </div>
-          <div className="mb-3">
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Description and brainstorming notes..."
-              rows={4}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900"
-            />
-          </div>
-          <div className="mb-3">
-            <textarea
-              value={nextSteps}
-              onChange={(e) => setNextSteps(e.target.value)}
-              placeholder="Next steps (one per line)..."
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="mb-8 p-5" style={{ backgroundColor: '#353535', borderRadius: '2px' }}>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Project title..."
+            className="w-full px-0 py-2 mb-3 border-0 border-b text-sm"
+            style={{ 
+              backgroundColor: 'transparent',
+              borderBottom: '1px solid #666666',
+              color: '#ffffff',
+              outline: 'none'
+            }}
+            autoFocus
+          />
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Description and brainstorming notes..."
+            rows={4}
+            className="w-full px-0 py-2 mb-3 border-0 text-sm resize-none"
+            style={{ 
+              backgroundColor: 'transparent',
+              color: '#ffffff',
+              outline: 'none'
+            }}
+          />
+          <textarea
+            value={nextSteps}
+            onChange={(e) => setNextSteps(e.target.value)}
+            placeholder="Next steps (one per line)..."
+            rows={3}
+            className="w-full px-0 py-2 mb-4 border-0 text-sm resize-none"
+            style={{ 
+              backgroundColor: 'transparent',
+              color: '#ffffff',
+              outline: 'none'
+            }}
+          />
           <div className="flex gap-3">
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as IdeationItem['priority'])}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900"
+              className="px-3 py-1 text-xs capitalize"
+              style={{ 
+                backgroundColor: '#2b2b2b',
+                border: '1px solid #666666',
+                color: '#ffffff'
+              }}
             >
               {priorities.map(p => (
-                <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>
+                <option key={p} value={p}>{p}</option>
               ))}
             </select>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-1 text-xs uppercase tracking-wider font-medium transition-opacity hover:opacity-70"
+              style={{ 
+                backgroundColor: '#ffffff',
+                color: '#2b2b2b'
+              }}
             >
-              Save Project
+              Save
             </button>
           </div>
         </form>
       )}
 
       {/* Items List */}
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="space-y-6">
         {sortedItems.length === 0 ? (
-          <p className="text-gray-500 text-center py-8 col-span-2">
-            No projects yet. Click "+ New Project" to add one!
+          <p className="text-center py-8 text-sm" style={{ color: '#666666' }}>
+            No projects yet. Click "+ New Project" to add one.
           </p>
         ) : (
           sortedItems.map(item => (
-            <div key={item.id} className={`p-4 border-2 rounded-lg ${getPriorityColor(item.priority)}`}>
+            <div key={item.id} className="pl-3" style={{ borderLeft: '2px solid #ffffff' }}>
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-lg">{item.title}</h3>
-                <span className="px-2 py-1 text-xs bg-white/50 dark:bg-black/30 rounded">
-                  {item.priority.toUpperCase()}
+                <h3 className="font-semibold text-base" style={{ color: '#ffffff', lineHeight: '1.4' }}>
+                  {item.title}
+                </h3>
+                <span className="text-xs uppercase ml-3" style={{ color: '#999999' }}>
+                  {item.priority}
                 </span>
               </div>
               
               {item.description && (
-                <p className="mb-3 opacity-90">{item.description}</p>
+                <p className="mb-3 text-sm" style={{ color: '#cccccc' }}>{item.description}</p>
               )}
 
               {item.nextSteps.length > 0 && (
                 <div className="mb-2">
-                  <p className="font-semibold text-sm mb-1">Next Steps:</p>
-                  <ul className="list-disc list-inside space-y-1">
+                  <p className="font-medium text-xs uppercase tracking-wider mb-2" style={{ color: '#999999' }}>
+                    Next Steps
+                  </p>
+                  <ul className="space-y-1 pl-3">
                     {item.nextSteps.map((step, idx) => (
-                      <li key={idx} className="text-sm opacity-90">{step}</li>
+                      <li key={idx} className="text-sm" style={{ color: '#cccccc', borderLeft: '1px solid #666666', paddingLeft: '8px' }}>
+                        {step}
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              <p className="text-xs opacity-75 mt-2">
+              <p className="text-xs" style={{ color: '#666666' }}>
                 Created {new Date(item.timestamp).toLocaleDateString()}
               </p>
             </div>
