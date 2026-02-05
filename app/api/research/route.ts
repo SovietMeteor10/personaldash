@@ -49,11 +49,12 @@ export async function POST(request: Request) {
       ref: branch,
     });
     
-    console.log('✅ File fetched, SHA:', fileData.sha?.slice(0, 10));
-    
-    if (!('content' in fileData)) {
-      throw new Error('File not found');
+    // Type guard to ensure we got a file, not a directory or array
+    if (Array.isArray(fileData) || !('content' in fileData)) {
+      throw new Error('File not found or is a directory');
     }
+    
+    console.log('✅ File fetched, SHA:', fileData.sha.slice(0, 10));
     
     // Decode current content
     const currentContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
